@@ -26,6 +26,14 @@ android {
     localAuthenticationAssets?.let { sourceSets.getByName("main").assets.srcDir(it) }
 
     signingConfigs {
+        create("debug") {
+            storeFile = file("legacy-keystore.jks")
+            storePassword = "android"
+            keyAlias = "legacy-key"
+            keyPassword = "android"
+            enableV1Signing = true
+            enableV2Signing = false
+        }
         create("release") {
             storeFile = file(
                 providers.environmentVariable("ANDROID_KEYSTORE_PATH")
@@ -34,6 +42,8 @@ android {
             storePassword = providers.environmentVariable("ANDROID_KEYSTORE_PASSWORD").getOrElse("")
             keyAlias = providers.environmentVariable("ANDROID_KEY_ALIAS").getOrElse("")
             keyPassword = providers.environmentVariable("ANDROID_KEY_PASSWORD").getOrElse("")
+            enableV1Signing = true
+            enableV2Signing = true
         }
     }
 
@@ -41,6 +51,7 @@ android {
         debug {
             applicationIdSuffix = ".hudtest"
             versionNameSuffix = "-hud-test"
+            signingConfig = signingConfigs.getByName("debug")
         }
         release {
             optimization {
