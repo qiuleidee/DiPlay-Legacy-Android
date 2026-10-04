@@ -26,7 +26,7 @@ android {
     localAuthenticationAssets?.let { sourceSets.getByName("main").assets.srcDir(it) }
 
     signingConfigs {
-        create("debug") {
+        getByName("debug") {
             storeFile = file("legacy-keystore.jks")
             storePassword = "android"
             keyAlias = "legacy-key"
