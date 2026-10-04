@@ -33,3 +33,8 @@ jobs:
             shared/build/reports/tests/
             common/build/reports/tests/
             mobile/build/reports/lint-results-debug.html
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: diplay-legacy-debug-apk
+          path: mobile/build/outputs/apk/debug/*.apk
