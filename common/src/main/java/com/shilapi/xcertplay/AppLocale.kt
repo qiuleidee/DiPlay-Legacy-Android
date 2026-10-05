@@ -3,9 +3,9 @@ package com.shilapi.xcertplay
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.LocaleManager
+
 import android.os.Build
-import android.os.LocaleList
+
 import android.content.Context
 import android.content.res.Configuration
 import com.shilapi.xcertplay.host.R
@@ -27,10 +27,33 @@ object AppLocale {
 
     private const val KEY_MIGRATED = "app_language_platform_migrated"
 
+    @androidx.annotation.RequiresApi(33)
+    private object Api33Impl {
+        fun preference(context: Context): String {
+            val manager = context.getSystemService(android.app.LocaleManager::class.java)
+            val locales = manager.applicationLocales
+            return if (locales.isEmpty) SYSTEM else locales[0].language
+        }
+        fun save(context: Context, language: String) {
+            val manager = context.getSystemService(android.app.LocaleManager::class.java)
+            manager.applicationLocales = locale(language)?.let { android.os.LocaleList(it) } ?: android.os.LocaleList.getEmptyLocaleList()
+        }
+        fun wrap(context: Context, prefs: android.content.SharedPreferences): Context {
+            if (!prefs.getBoolean(KEY_MIGRATED, false)) {
+                val manager = context.getSystemService(android.app.LocaleManager::class.java)
+                val previous = locale(prefs.getString(KEY_LANGUAGE, SYSTEM) ?: SYSTEM)
+                if (manager.applicationLocales.isEmpty && previous != null) {
+                    manager.applicationLocales = android.os.LocaleList(previous)
+                }
+                prefs.edit().putBoolean(KEY_MIGRATED, true).remove(KEY_LANGUAGE).apply()
+            }
+            return context
+        }
+    }
+
     fun preference(context: Context): String {
         if (Build.VERSION.SDK_INT >= 33) {
-            val locales = context.getSystemService(LocaleManager::class.java).applicationLocales
-            return if (locales.isEmpty) SYSTEM else locales[0].language
+            return Api33Impl.preference(context)
         }
         return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getString(KEY_LANGUAGE, SYSTEM)?.takeIf { it in ALL } ?: SYSTEM
@@ -39,8 +62,7 @@ object AppLocale {
     fun save(context: Context, language: String) {
         require(language in ALL)
         if (Build.VERSION.SDK_INT >= 33) {
-            context.getSystemService(LocaleManager::class.java).applicationLocales =
-                locale(language)?.let { LocaleList(it) } ?: LocaleList.getEmptyLocaleList()
+            Api33Impl.save(context, language)
             context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
                 .putBoolean(KEY_MIGRATED, true).remove(KEY_LANGUAGE).apply()
         } else {
@@ -53,16 +75,7 @@ object AppLocale {
     fun wrap(context: Context): Context {
         if (Build.VERSION.SDK_INT >= 33) {
             val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            if (!prefs.getBoolean(KEY_MIGRATED, false)) {
-                val manager = context.getSystemService(LocaleManager::class.java)
-                val previous = locale(prefs.getString(KEY_LANGUAGE, SYSTEM) ?: SYSTEM)
-                // Never overwrite a language already chosen through Android Settings.
-                if (manager.applicationLocales.isEmpty && previous != null) {
-                    manager.applicationLocales = LocaleList(previous)
-                }
-                prefs.edit().putBoolean(KEY_MIGRATED, true).remove(KEY_LANGUAGE).apply()
-            }
-            return context
+            return Api33Impl.wrap(context, prefs)
         }
         val locale = locale(preference(context)) ?: return context
         val configuration = Configuration(context.resources.configuration).apply {

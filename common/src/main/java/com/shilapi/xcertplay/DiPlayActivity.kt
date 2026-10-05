@@ -1128,10 +1128,10 @@ class DiPlayActivity : ComponentActivity() {
         typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         val content = rounded(if (primary) ACCENT else SURFACE, if (primary) ACCENT else BORDER)
         background = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            android.graphics.drawable.RippleDrawable(ColorStateList.valueOf(0x336F9FD9), content, null)
+            Api21Impl.createRipple(content)
         } else content
         setPadding(dp(16), 0, dp(16), 0); minHeight = dp(56)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) stateListAnimator = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Api21Impl.clearStateListAnimator(this)
         setOnClickListener { click() }
     }
     private fun rounded(color: Int, stroke: Int) = GradientDrawable().apply { setColor(color); cornerRadius = dp(20).toFloat(); setStroke(dp(1), stroke) }
@@ -1146,5 +1146,15 @@ class DiPlayActivity : ComponentActivity() {
         private val TEXT = Color.rgb(241, 245, 252)
         private val MUTED = Color.rgb(168, 182, 202)
         private val WARNING = Color.rgb(255, 196, 128)
+    }
+
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private object Api21Impl {
+        fun createRipple(content: android.graphics.drawable.Drawable): android.graphics.drawable.Drawable =
+            android.graphics.drawable.RippleDrawable(ColorStateList.valueOf(0x336F9FD9), content, null)
+
+        fun clearStateListAnimator(view: View) {
+            view.stateListAnimator = null
+        }
     }
 }
