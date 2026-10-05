@@ -519,7 +519,13 @@ class CarPlayHostActivity : AppCompatActivity() {
             maybeStartCarPlay()
         } else {
             awaitingVpnConsent = true
-            vpnConsent.launch(consent)
+            try {
+                vpnConsent.launch(consent)
+            } catch (e: Exception) {
+                android.util.Log.e("CarPlayHostActivity", "Failed to launch VPN consent", e)
+                setStatus("此车机系统不支持或缺少 VPN 权限组件，无法使用有线连接。")
+                awaitingVpnConsent = false
+            }
         }
     }
 
