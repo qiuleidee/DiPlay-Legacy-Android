@@ -63,6 +63,13 @@ class CarPlayVpnService : VpnService() {
 
     override fun onBind(intent: Intent?): IBinder = binder
 
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private object Api21Impl {
+        fun setBlocking(builder: Builder, blocking: Boolean) {
+            builder.setBlocking(blocking)
+        }
+    }
+
     @Synchronized
     fun attach(
         ncm: NcmUsbBridge,
@@ -93,7 +100,7 @@ class CarPlayVpnService : VpnService() {
                 .addRoute(LINK_LOCAL_ROUTE, LINK_PREFIX)
                 .setSession(SESSION_NAME)
                 .setMtu(TUN_MTU)
-            .apply { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) setBlocking(true) }
+            .apply { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Api21Impl.setBlocking(this, true) }
                 .establish()
                 ?: throw IOException("VpnService.establish returned null")
             tun = tunFd
