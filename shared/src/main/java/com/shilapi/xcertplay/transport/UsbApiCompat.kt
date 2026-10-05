@@ -38,6 +38,8 @@ internal fun selectUsbConfiguration(
         configuration.id,
         0,
         null,
+        0,
+        1_000,
     ) >= 0
 }
 
