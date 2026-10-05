@@ -36,7 +36,7 @@ object IphoneCarPlayConfiguration {
 
     fun find(device: UsbDevice): CarPlayUsbConfiguration? {
         val configurations = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            platformConfigurations(device)
+            Api21Impl.platformConfigurations(device)
         } else {
             listOf(CarPlayUsbConfiguration(1, (0 until device.interfaceCount).map(device::getInterface)))
         }
@@ -104,14 +104,16 @@ object IphoneCarPlayConfiguration {
         else if (usbInterface.interfaceClass == 0x0a && usbInterface.endpointCount > 0) 1 else 0
 
     @androidx.annotation.RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun platformConfigurations(device: UsbDevice): List<CarPlayUsbConfiguration> =
-        (0 until device.configurationCount).map { index ->
-            val configuration: UsbConfiguration = device.getConfiguration(index)
-            CarPlayUsbConfiguration(
-                id = configuration.id,
-                interfaces = (0 until configuration.interfaceCount).map(configuration::getInterface),
-                platformConfiguration = configuration,
-            )
-        }
+    private object Api21Impl {
+        fun platformConfigurations(device: UsbDevice): List<CarPlayUsbConfiguration> =
+            (0 until device.configurationCount).map { index ->
+                val configuration: android.hardware.usb.UsbConfiguration = device.getConfiguration(index)
+                CarPlayUsbConfiguration(
+                    id = configuration.id,
+                    interfaces = (0 until configuration.interfaceCount).map(configuration::getInterface),
+                    platformConfiguration = configuration,
+                )
+            }
+    }
 
 }

@@ -20,11 +20,17 @@ internal fun waitForUsbRequest(connection: UsbDeviceConnection, timeoutMillis: L
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) connection.requestWait(timeoutMillis.coerceAtLeast(1))
     else connection.requestWait()
 
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+private object Api21Impl {
+    fun selectUsbConfiguration(connection: UsbDeviceConnection, value: Any?): Boolean =
+        connection.setConfiguration(value as android.hardware.usb.UsbConfiguration)
+}
+
 internal fun selectUsbConfiguration(
     connection: UsbDeviceConnection,
     configuration: CarPlayUsbConfiguration,
 ): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-    selectUsbConfiguration21(connection, configuration.platformConfiguration)
+    Api21Impl.selectUsbConfiguration(connection, configuration.platformConfiguration)
 } else {
     connection.controlTransfer(
         UsbConstants.USB_DIR_OUT or UsbConstants.USB_TYPE_STANDARD,
@@ -32,8 +38,6 @@ internal fun selectUsbConfiguration(
         configuration.id,
         0,
         null,
-        0,
-        1_000,
     ) >= 0
 }
 
@@ -48,7 +52,3 @@ internal fun selectUsbInterface(connection: UsbDeviceConnection, usbInterface: U
         0,
         1_000,
     ) >= 0
-
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-private fun selectUsbConfiguration21(connection: UsbDeviceConnection, value: Any?): Boolean =
-    connection.setConfiguration(value as UsbConfiguration)
