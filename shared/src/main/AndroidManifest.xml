@@ -1,4 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-sdk tools:overrideLibrary="androidx.core, androidx.appcompat, androidx.activity, androidx.annotation, androidx.fragment, androidx.lifecycle.runtime, androidx.lifecycle.viewmodel, androidx.lifecycle.livedata.core, androidx.savedstate, androidx.vectordrawable, androidx.vectordrawable.animated, androidx.customview, androidx.cursoradapter, androidx.collection, androidx.versionedparcelable, androidx.interpolator, androidx.drawerlayout, androidx.viewpager, androidx.loader, androidx.documentfile, androidx.localbroadcastmanager, androidx.print, androidx.coordinatorlayout, androidx.lifecycle.common, androidx.lifecycle.livedata, androidx.arch.core, androidx.concurrent.futures, androidx.tracing" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
