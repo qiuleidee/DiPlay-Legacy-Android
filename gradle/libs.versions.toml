@@ -1,9 +1,9 @@
 [versions]
 agp = "9.3.0"
-coreKtx = "1.13.1"
-activity = "1.8.2"
+coreKtx = "1.7.0"
+activity = "1.4.0"
 kotlin = "2.2.10"
-appcompat = "1.6.1"
+appcompat = "1.4.2"
 appProjected = "1.4.0"
 appAutomotive = "1.7.0"
 app = "1.4.0"
