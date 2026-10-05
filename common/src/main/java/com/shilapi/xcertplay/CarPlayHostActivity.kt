@@ -45,7 +45,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.widget.CompoundButtonCompat
 import android.widget.TextView
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
@@ -100,7 +100,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  *
  * Apple devices are discovered by vendor ID; CH341 uses the configured VID/PID below.
  */
-class CarPlayHostActivity : ComponentActivity() {
+class CarPlayHostActivity : AppCompatActivity() {
     private data class SettingsBaseline(
         val safeAreaSize: DisplaySize?,
         val safeAreaRect: SafeAreaRect?,
