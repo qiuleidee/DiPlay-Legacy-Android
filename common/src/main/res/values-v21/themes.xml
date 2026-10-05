@@ -1,7 +1,8 @@
 <resources>
-    <style name="Theme.Xcertplay" parent="android:style/Theme.Material.NoActionBar">
+    <style name="Theme.Xcertplay" parent="Theme.AppCompat.NoActionBar">
         <item name="android:fontFamily">sans</item>
         <item name="android:colorAccent">#A6C8FF</item>
+        <item name="colorAccent">#A6C8FF</item>
         <item name="android:navigationBarColor">#0C111B</item>
         <item name="android:statusBarColor">#0C111B</item>
         <item name="android:windowBackground">#0C111B</item>
