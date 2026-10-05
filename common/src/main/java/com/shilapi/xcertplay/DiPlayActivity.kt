@@ -76,7 +76,7 @@ class DiPlayActivity : ComponentActivity() {
     private val bluetoothPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) choosePhone() else permissionHelp(getString(R.string.nearby_devices), getString(R.string.allow_nearby_devices_so_diplay_can_connect_to_your_paired))
     }
-    private val export = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+    private val export = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
         if (uri != null) exportDiagnostics(uri)
     }
 
