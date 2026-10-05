@@ -49,7 +49,6 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".hudtest"
             versionNameSuffix = "-hud-test"
             signingConfig = signingConfigs.getByName("debug")
         }
