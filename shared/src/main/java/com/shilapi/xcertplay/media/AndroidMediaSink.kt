@@ -147,7 +147,7 @@ class AndroidMediaSink(
     }
 
     override fun onMicrophoneStarted(type: Int, config: MicrophoneConfig) {
-        val uplink = microphoneUplinks.computeIfAbsent(type) { MicrophoneUplink(config) }
+        val uplink = microphoneUplinks.getOrPut(type) { MicrophoneUplink(config) }
         if (!uplink.start()) microphoneUplinks.remove(type, uplink)
     }
 
@@ -175,7 +175,7 @@ class AndroidMediaSink(
     }
 
     private fun videoDecoder(type: Int): VideoDecoder =
-        videoDecoders.computeIfAbsent(type) {
+        videoDecoders.getOrPut(type) {
             VideoDecoder(
                 type,
                 surfaces[type] ?: defaultSurface,
